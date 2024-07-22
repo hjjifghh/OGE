@@ -3,7 +3,7 @@ clear;
 clc;
 close all;
 
-fol='F:\1数据\3钦州\2整理后\3产品数据L2\202403';
+fol='E:\郑亦奇2024\test2\参考程序\QZ_L2&solution\20240401-0420';
 f=fullfile(fol,'*.txt');
 
 files=dir(f); %导入数据
@@ -74,8 +74,8 @@ fD(cellfun(@isempty,fD))=[];
 
 %%%%
 
-for i = 1:length(fD)
-
+%for i = 1:length(fD)
+i=2;
     st = cell2mat(fD{i}(4,:));
 
     lenf = cellfun(@length,fD{i}(5,:));% 将函数应用于每一个元胞元素
@@ -144,13 +144,13 @@ for i = 1:length(fD)
         r5=num2str((sh(2)-sh(1))*1000);
         r6='m';
         title(til,[r1 r2 r3 r4 r5 r6]);
-        xlabel(til,'Speed(m/s)');
+        xlabel(til,'Day');
         ylabel(til,'Height(km)');
 
 
     end
 
-end
+%end
 
 
 

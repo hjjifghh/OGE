@@ -1,7 +1,7 @@
 
 % 打开文件并读取数据
 fileID = fopen('L1B ST.txt', 'r');
-headerLines = 22; % 跳过前面的注释行和表头行
+headerLines = 3; % 跳过前面的注释行和表头行
 fgets(fileID, headerLines); % 跳过前22行
 
 % 初始化变量存储数据
