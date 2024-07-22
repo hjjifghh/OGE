@@ -133,7 +133,7 @@ for i = 1:length(fD)
             contourf(st,sh,ss{k},20);
             colormap default;
             colorbar;
-            clim([-50,50]);
+            ylim([-30,30]);
             title(tex(k));
         end
         
@@ -144,7 +144,7 @@ for i = 1:length(fD)
         r5=num2str((sh(2)-sh(1))*1000);
         r6='m';
         title(til,[r1 r2 r3 r4 r5 r6]);
-        xlabel(til,'Speed(m/s)');
+        xlabel(til,'Day');
         ylabel(til,'Height(km)');
 
 

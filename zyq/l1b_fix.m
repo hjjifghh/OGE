@@ -26,7 +26,7 @@ for i = 1:length(heights)
     end
     if isnan(rv3(i)) || isnan(rv4(i))
         continue;
-    elseif abs(rv3(i) + rv4(i)) > 1e-6
+    elseif abs(rv3(i) + rv4(i)) > 1e-3
         avgRv = (abs(rv3(i)) + abs(rv4(i))) / 2;
         rv3(i) = sign(rv3(i)) * avgRv;
         rv4(i) = -sign(rv4(i)) * avgRv;

@@ -1,6 +1,7 @@
+
 % 打开文件并读取数据
-fileID = fopen('L1B_ST.txt', 'r');
-headerLines = 32; % 跳过前面的注释行和表头行
+fileID = fopen('L1B ST.txt', 'r');
+headerLines = 22; % 跳过前面的注释行和表头行
 fgets(fileID, headerLines); % 跳过前22行
 
 % 初始化变量存储数据
@@ -15,7 +16,7 @@ rv5 = [];
 while ~feof(fileID)
     line = fgetl(fileID);
     if ~isempty(line) && ~ismember(line(1), {'#', '%'}) % 确保不是注释行或空行
-        data = strsplit(line, ' '); 
+        data = strsplit(line,' '); 
         if numel(data) >= 11 % 确保数据行至少有11个元素（基于提供的列数）
             heights = [heights, str2double(data{2})];
             rv1 = [rv1, str2double(data{4})];
