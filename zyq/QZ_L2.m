@@ -3,8 +3,8 @@ clear;
 clc;
 close all;
 
-fol='E:\郑亦奇2024\test2\参考程序\QZ_L2&solution\20240401-0420';
-f=fullfile(fol,'*.txt');%根据系统规则连接文件夹目录与文件名，这里的文件名是以通配符发方式实现的
+fol='E:\郑亦奇2024\test2\参考程序\QZ_L2&solution\mini';
+f=fullfile(fol,'*.txt');%根据系统规则连接文件夹目录与文件名，这里的文件名是以通配符的方式实现的
 
 files=dir(f); %导入数据。dir用于列出指定目录下的文件及其信息
 nf=length(files); %数组的最大长度。获取files数组的长度即获取文件的总数
@@ -42,8 +42,8 @@ for k=1:nf %这里的1：nf是一个范围，并且两边都取得到
     Tc{k} = T;%将每个文件的数据以矩阵的形式存入细胞数组
 end
 
-h_uniq = [unique(hTs','rows')]'%删除重复行，unique默认返回列向量形式，需要转置
-hu_s = size(h_uniq,2) %仅查询第二维度的长度（即行的数量）
+h_uniq = [unique(hTs','rows')]';%删除重复行，unique默认返回列向量形式，需要转置
+hu_s = size(h_uniq,2); %仅查询第二维度的长度（即行的数量）
 for k = 1:nf
     for i = 1:hu_s
         if freq(k)==50 && isequal(hTs(:,k),h_uniq(:,i))
@@ -74,17 +74,16 @@ fD(cellfun(@isempty,fD))=[];
 
 %%%%
 
-%for i = 1:length(fD)
-i=2;
-    st = cell2mat(fD{i}(4,:));
+for i = 1:length(fD) %一组 （高度间距+频率）一张图，即细胞数组的一个单位
+    st = cell2mat(fD{i}(4,:)); %提取第四列数据（相对时间）并转换为矩阵形式
 
-    lenf = cellfun(@length,fD{i}(5,:));% 将函数应用于每一个元胞元素
+    lenf = cellfun(@length,fD{i}(5,:));% 计算每个Tc的长度
     [lenM,lenI] = max(lenf); % 最大值及索引
 
     % %
     for j = 1:length(st)
 
-        A = fD{i}{5,j};
+        A = fD{i}{5,j}; %提取出数据矩阵
         A(A==-9999999) = -99999999;  %垂直风速
         As = A-9999; % 避风速0
         As(lenM,4) = 0;
@@ -99,14 +98,14 @@ i=2;
 
     % %
     n = 0:4:4*(length(st)-1);
-    sh = C(:,4*(lenI-1)+1);
-    ss = C(:,n+2);
-    sd = C(:,n+3);
+    sh = C(:,4*(lenI-1)+1); %高度
+    ss = C(:,n+2); %风速（无方向）
+    sd = C(:,n+3); %风向角度，单位是角度
     sv = C(:,n+4); % 垂直风
 
     % %
-    sx = ss.*sin((sd-180)*pi/180);
-    sy = ss.*cos((sd-180)*pi/180);
+    sx = ss.*sin((sd-180)*pi/180); %纬向风，注意角度向弧度的转换
+    sy = ss.*cos((sd-180)*pi/180); %经向风
 
     % % % 赋[]值
     % [rx1,~] = find(isnan(sx));
@@ -124,17 +123,18 @@ i=2;
     if length(st)>1
          
         figure;
-        til = tiledlayout(3,1);
+        til = tiledlayout(3,1);   %创建三行一列的布局（纬向风、经向风、垂直风）
         
         ss = {sx,sy,sv};
         tex = ["纬向风","经向风","垂直风"];
         for k = 1:3
-            nexttile;
-            contourf(st,sh,ss{k},20);
-            colormap default;
-            colorbar;
-            clim([-50,50]);
-            title(tex(k));
+            nexttile; %在当前布局中移动到下一个子图区域
+            contourf(st,sh,ss{k},20); 
+            %等高线填充图，时间序列、高度序列、风速数据（按类型）、20指定了等高线的级别数
+            colormap default; %设置默认的颜色映射
+            colorbar; %添加色彩条
+            caxis([-50 50]); %设置色彩轴的范围,这里存在版本问题。22版后是clim
+            title(tex(k)); %根据tex，为子图添加标题
         end
         
         r1='Freq=';
@@ -143,14 +143,14 @@ i=2;
         r4='HR=';
         r5=num2str((sh(2)-sh(1))*1000);
         r6='m';
-        title(til,[r1 r2 r3 r4 r5 r6]);
+        title(til,[r1 r2 r3 r4 r5 r6]);%拼接主标题
         xlabel(til,'Day');
-        ylabel(til,'Height(km)');
+        ylabel(til,'Height(km)');% 坐标轴标签
 
 
     end
 
-%end
+end
 
 
 
