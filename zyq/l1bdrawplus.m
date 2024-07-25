@@ -3,7 +3,14 @@ clc;
 close all;
 
 % 打开文件并读取数据
-filepath='L1B_ST_Processed.txt';
+% 检查是否有足够的输入参数
+    if nargin < 1
+        % 如果没有输入参数，则提示用户输入文件路径
+        filePath = input('请输入文件路径: ', 's');
+    else
+        % 第一个输入参数应该是文件路径
+        filePath = inputname(1);
+    end
 
 % 初始化变量存储数据
 heights = [];
@@ -13,7 +20,7 @@ rv3 = [];
 rv4 = [];
 rv5 = [];
 
-fileID = fopen(filepath);
+fileID = fopen(filePath);
 
 for i = 1:9
     fg = fgetl(fileID);
@@ -27,7 +34,7 @@ freq = fg(19:26);
 fclose(fileID);
 
 % 使用 readmatrix 读取数据
-dataMatrix = readmatrix(filepath, 'CommentStyle', '#');
+dataMatrix = readmatrix(filePath, 'HeaderLines', 32, 'CommentStyle', '#');
 
 % 提取所需的列
 heights = dataMatrix(:, 1);
@@ -45,7 +52,7 @@ rv3(rv3 == -9999999) = NaN;
 rv4(rv4 == -9999999) = NaN;
 rv5(rv5 == -9999999) = NaN;
 
-
+% 绘制所有波束的径向速度随高度变化的曲线，同时处理NaN值
 
 % 绘制所有波束的径向速度随高度变化的曲线，坐标轴交换
 figure;
@@ -58,15 +65,20 @@ plot(rv5, heights, 'c-', 'LineWidth', 1.5, 'DisplayName', 'Beam 5', 'Marker', 'd
 
 % 调整坐标轴显示范围以适应数据
 xlim([min([rv1,rv2,rv3,rv4,rv5],[], 'all'), max([rv1,rv2,rv3,rv4,rv5],[], 'all')]);
-ylim([min(heights, [],'all'), max(heights,[], 'all')]);
+ylim([min(heights, [],'all'), max(heights,[], 'all')/4]);
 
 % 设置图表属性
 xlabel('Radial Velocity (m/s)');
 ylabel('Height (m)');
-gap=' ';
+gap=' '
 title([time gap freq]);
 legend('show');
 grid on;
+
+    % 保存图形
+    saveas(gcf, 'output.png');
+    
+    fprintf('图形已保存。\n');
 
 % 保持坐标轴调整状态并显示图表
 hold off;
