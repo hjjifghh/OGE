@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.neighbors import LocalOutlierFactor
 
 def read_data(filename):
     """读取原始数据文件"""
@@ -14,31 +15,52 @@ def read_data(filename):
             data.append([float(part) if part != '-99999' else np.nan for part in parts])
     return np.array(data)
 
-def correct_and_smooth(data):
-    """校正速度数据并进行平滑处理"""
-    heights = data[:, 0]
-    rv_cols = data[:, 2::3]  # 提取Rv1至Rv5列
-    corrected_rvs = rv_cols.copy()
+def correct(data):
+    """校正数据并移除异常值"""
+    # 假设速度列是第 3、6、9、12 和 15 列（从0开始计数）
+    velocity_columns = [2, 5, 8, 11, 14]
+    outlier_indices = {}
     
-    # 校正Beam间的关系
-    corrected_rvs[1::2, :] = -corrected_rvs[::2, :]  # Beam1/2, Beam3/4 对调正负号
+    # 移除包含 NaN 值的行
+    cleaned_data = data[~np.isnan(data).any(axis=1)]
     
-    # 简单的平滑处理（这里使用前后项平均作为示例）
-    for col in range(corrected_rvs.shape[1]):
-        for i in range(1, len(heights) - 1):
-            if not np.isnan(corrected_rvs[i, col]):  # 跳过NaN值
-                corrected_rvs[i, col] = np.mean(corrected_rvs[i-1:i+2, col])
+    for col in velocity_columns:
+        # 选择当前列并应用 LocalOutlierFactor
+        X = cleaned_data[:, col].reshape(-1, 1)
+        # 使用较小的 n_neighbors，以避免警告
+        lof = LocalOutlierFactor(n_neighbors=min(len(X), 28), contamination='auto')
+        outlier_labels = lof.fit_predict(X)
+        
+        # 找出异常值的索引
+        outlier_mask = outlier_labels == -1
+        outlier_indices[col] = np.flatnonzero(outlier_mask)
     
-    # 将修正后的速度数据放回原数据结构
-    data[:, 2::3] = corrected_rvs
-    return data
+    # 创建一个新数组用于存储处理后的数据
+    processed_data = []
+    removed_values = []
+
+    for i, row in enumerate(cleaned_data):
+        new_row = row.copy()
+        for col in velocity_columns:
+            if i in outlier_indices[col]:
+                # 如果速度值被标记为异常，则将其设置为 NaN 并记录
+                new_row[col] = np.nan
+                removed_values.append((row[0], row[col]))
+        processed_data.append(new_row)
+    
+    # 将列表转换为 NumPy 数组
+    processed_data = np.array(processed_data)
+
+    return processed_data, removed_values
+
+
 
 def write_data_with_format(data, new_filename):
     """将处理后的数据写入新文件，保持原格式，速度数据保留两位小数"""
     with open(new_filename, 'w') as file:
         # 重新写入注释行
-        file.write("Original Comment Line 1\n")
-        file.write("Original Comment Line 2\n")  # 假设的注释行
+        file.write("#Original Comment Line 1\n")
+        file.write("#Original Comment Line 2\n")  # 假设的注释行
         # 写入列名
         file.write("Height\tSNR1\tRv1\t...\tSW5\n")
         
@@ -48,7 +70,7 @@ def write_data_with_format(data, new_filename):
                 "\t" +str(round(value, 2) if idx in {2, 5, 8, 11, 14} else str(value))  # 速度数据保留两位小数
                 for idx, value in enumerate(row)
             ]
-            file.write('\t'.join(formatted_row) + '\n')
+            file.write(' '.join(formatted_row) + '\n')
 
 # 主程序
 filename = 'L1B ST.txt'
@@ -58,7 +80,12 @@ new_filename = 'L1B_ST_Processed.txt'
 original_data = read_data(filename)
 
 # 校正和处理数据
-processed_data = correct_and_smooth(original_data)
+processed_data, removed_values = correct(original_data)
+
+# 输出被删除的速度值及其对应的高度
+print("Removed Values and Corresponding Heights:")
+for height, speed in removed_values:
+    print(f"Height: {height}, Speed: {speed}")
 
 # 写入新文件
 write_data_with_format(processed_data, new_filename)
