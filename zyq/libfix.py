@@ -16,27 +16,40 @@ def read_data(filename):
     return np.array(data)
 
 def correct(data):
-    """Correct the data by removing outliers."""
-    # Assuming the velocity columns are 3, 6, 9, 12, 15
-    velocity_columns = [2, 5, 8, 11, 14]  # Python indexing starts at 0
-    outlier_indices = set()
-
-    # Remove NaN values before applying LOF
+    """校正数据并移除异常值"""
+    # 假设速度列是第 3、6、9、12 和 15 列（从0开始计数）
+    velocity_columns = [2, 5, 8, 11, 14]
+    outlier_indices = {}
+    
+    # 移除包含 NaN 值的行
     cleaned_data = data[~np.isnan(data).any(axis=1)]
     
     for col in velocity_columns:
-        # Select the column and apply LocalOutlierFactor
+        # 选择当前列并应用 LocalOutlierFactor
         X = cleaned_data[:, col].reshape(-1, 1)
-        lof = LocalOutlierFactor(n_neighbors=min(len(X), 30), contamination='auto')
+        # 使用较小的 n_neighbors，以避免警告
+        lof = LocalOutlierFactor(n_neighbors=min(len(X), 28), contamination='auto')
         outlier_labels = lof.fit_predict(X)
         
-        # Find the indices of the outliers in the original dataset
+        # 找出异常值的索引
         outlier_mask = outlier_labels == -1
-        outlier_indices.update(np.flatnonzero(outlier_mask))
+        outlier_indices[col] = np.flatnonzero(outlier_mask)
     
-    # Remove outliers
-    processed_data = np.delete(cleaned_data, list(outlier_indices), axis=0)
-    removed_values = [(data[i, 0], data[i, col]) for col in velocity_columns for i in outlier_indices]
+    # 创建一个新数组用于存储处理后的数据
+    processed_data = []
+    removed_values = []
+
+    for i, row in enumerate(cleaned_data):
+        new_row = row.copy()
+        for col in velocity_columns:
+            if i in outlier_indices[col]:
+                # 如果速度值被标记为异常，则将其设置为 NaN 并记录
+                new_row[col] = np.nan
+                removed_values.append((row[0], row[col]))
+        processed_data.append(new_row)
+    
+    # 将列表转换为 NumPy 数组
+    processed_data = np.array(processed_data)
 
     return processed_data, removed_values
 
