@@ -2,15 +2,7 @@ clear;
 clc;
 close all;
 
-[file,location] = uigetfile('.txt'); %打开文件选择框
-filepath = fullfile(location, file);%拼接文件名
-disp(filepath)
-command="python libfix.py "+filepath;
-[status,cmdout] = system(command,'-echo');
-disp(cmdout);
-draw(filepath);
-draw(filepath(1:end-4)+"_Processed.txt");
-
+[file,location] = uigetfile;
 
 
 function draw(filepath)
