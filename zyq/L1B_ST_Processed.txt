@@ -1,6 +1,36 @@
-#Original Comment Line 1
-#Original Comment Line 2
-Height	SNR1	Rv1	...	SW5
+#DataName: Power Spectrum Parameters
+#CopyRight: Chinese Meridian Project
+#Station: OQZQB(108.66E,22.10N,23m)
+#Instrument: MST Radar
+#Producer: Wuhan University
+#FileCreateTime: 2024-05-16T01:15:23
+#DataLevel: L1B
+#DataVersion: V01.00
+#DataStartTime: 2024-05-16T01:00:00.000
+#DataEndTime: 2024-05-16T01:15:17.000
+#RecordNumber: 160
+#QualityFlag: 1(1:Okay,2:Caution,3:No-Recommend)
+#DeviceState: TansInputPower=800kW, WellRAntennaNum=1261, WellTAntennaNum=997
+#DeviceSpec: Freq=50.00MHz, PkPower=1994kW, RAntennaNum=1261, TAntennaNum=997, BeamWidth=4.5deg, Rband=1.0MHz
+#ObsParameters: PlsWidth=4.00us, PlsCode=8-bit Complementary, PRF=1562.50Hz, PlsAccum=16, Range=96km, GateNum=160, Rmin=300m, EleAngle=15.0deg, BeamOrder=SZNEW, nFFT=512, SpAverage=10
+#Height(m): The Height Level of the Power Spectrum Parameters, I7.7, missingdata=NaN
+#SNR1(dB): Signal to Noise Ratio in dB of Beam1, F5.1, missingdata=-99999
+#Rv1(m/s): Radial Velocity in m/s of Beam1, F7.2, missingdata=-9999999
+#SW1(m/s): Spectrum Width in m/s of Beam1, F6.2, missingdata=-999999
+#SNR2(dB): Signal to Noise Ratio in dB of Beam2, F5.1, missingdata=-99999
+#Rv2(m/s): Radial Velocity in m/s of Beam2, F7.2, missingdata=-9999999
+#SW2(m/s): Spectrum Width in m/s of Beam2, F6.2, missingdata=-999999
+#SNR3(dB): Signal to Noise Ratio in dB of Beam3, F5.1, missingdata=-99999
+#Rv3(m/s): Radial Velocity in m/s of Beam3, F7.2, missingdata=-9999999
+#SW3(m/s): Spectrum Width in m/s of Beam3, F6.2, missingdata=-999999
+#SNR4(dB): Signal to Noise Ratio in dB of Beam4, F5.1, missingdata=-99999
+#Rv4(m/s): Radial Velocity in m/s of Beam4, F7.2, missingdata=-9999999
+#SW4(m/s): Spectrum Width in m/s of Beam4, F6.2, missingdata=-999999
+#SNR5(dB): Signal to Noise Ratio in dB of Beam5, F5.1, missingdata=-99999
+#Rv5(m/s): Radial Velocity in m/s of Beam5, F7.2, missingdata=-9999999
+#SW5(m/s): Spectrum Width in m/s of Beam5, F6.2, missingdata=-999999
+#-------------------------------------------------------------------
+ Height    SNR1     Rv1     SW1    SNR2     Rv2     SW2    SNR3     Rv3     SW3    SNR4     Rv4     SW4    SNR5     Rv5     SW5
 	300.0 	52.3 	-1.51 	6.94 	53.8 	1.15 	6.01 	53.9 	-0.51 	5.89 	43.6 	0.19 	15.76 	66.7 	-0.17 	-7.3
 	900.0 	52.4 	-0.12 	7.02 	53.8 	-0.16 	6.11 	52.8 	-0.12 	6.73 	47.9 	-0.18 	11.42 	55.3 	-0.15 	5.27
 	1500.0 	57.1 	0.63 	5.19 	57.3 	-0.89 	5.05 	56.1 	0.22 	5.73 	55.4 	-0.58 	7.05 	57.6 	-0.18 	5.71
