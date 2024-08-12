@@ -152,9 +152,10 @@ persistent d;
 
     % 构建新的文件路径
     % 注意：这里我们假设文件名中不含空格
-    new_file_name = file_path+"\"+name+ '.png';
-    new_filepath = fullfile(folder_path, new_file_name);
+    new_file_namepng = file_path+"\"+name+ '.png';
+    new_file_namefig = file_path+"\"+name+ '.fig';
 
     % 保存当前图形窗口
-    saveas(fig,new_file_name);
+    saveas(fig,new_file_namepng);
+    saveas(fig,new_file_namefig);
 end
