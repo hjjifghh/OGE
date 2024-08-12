@@ -1,3 +1,4 @@
+%基于一个选定的L1B文件，先调用python程序进行优化，然后绘制高度-速度图像
 clear;
 clc;
 close all;
@@ -5,13 +6,12 @@ close all;
 [file,location] = uigetfile('.txt'); %打开文件选择框
 filepath = fullfile(location, file);%拼接文件名
 disp(filepath)
-command="python libfix.py "+filepath;
+command="python libfix.py "+filepath+" "+file;
 [status,cmdout] = system(command,'-echo');
-disp(cmdout);
+%disp(cmdout); %好像不需要单独写显示
 draw(filepath);
-draw(filepath(1:end-4)+"_Processed.txt");
-
-
+new_filepath = filepath(1:end-length(file)) + "Processed\" + file(1:end-4) + "_Processed.txt";
+draw(new_filepath);
 
 function draw(filepath)
     % 初始化变量存储数据

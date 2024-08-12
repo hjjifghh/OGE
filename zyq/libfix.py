@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.neighbors import LocalOutlierFactor
 import sys
+import os
 
 def read_data(filename):
     """读取原始数据文件，并收集前33行的注释"""
@@ -79,11 +80,13 @@ if __name__=="__main__":
     #filename = 'L1B ST.txt'
     #new_filename = 'L1B_ST_Processed.txt'
     
-    filename = sys.argv[1]
-    new_filename = filename[:-4]+"_Processed.txt"
+    filepath = sys.argv[1]
+    filename = sys.argv[2]
+    new_filepath = filepath[:-len(filename)]+"Processed\\"+filename[:-4]+"_Processed.txt"
+    os.mkdir(filepath[:-len(filename)]+"Processed\\")
     
     # 读取数据
-    original_data,comments= read_data(filename)
+    original_data,comments= read_data(filepath)
     
     # 校正和处理数据
     processed_data, removed_values = correct(original_data)
@@ -94,6 +97,6 @@ if __name__=="__main__":
         print(f"Height: {height}, Speed: {speed}")
     
     # 写入新文件
-    write_data_with_format(processed_data, new_filename,comments)
+    write_data_with_format(processed_data, new_filepath,comments)
     
-    print(f"Data processing completed. New file saved as '{new_filename}'")
+    print(f"Data processing completed. New file saved as '{new_filepath}'")

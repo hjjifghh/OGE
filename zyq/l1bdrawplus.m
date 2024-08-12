@@ -1,3 +1,5 @@
+%弃用
+%保留了绘图的基本功能
 clear;
 clc;
 close all;

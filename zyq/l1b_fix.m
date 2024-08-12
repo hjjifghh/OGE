@@ -1,3 +1,4 @@
+%弃用
 % 读取原始数据文件
 filename = 'L1B ST.txt';
 fileID = fopen(filename, 'r');
