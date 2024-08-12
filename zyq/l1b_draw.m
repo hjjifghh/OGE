@@ -3,7 +3,6 @@ clear;
 clc;
 close all;
 
-
  % 获取当前Unix时间戳
     unixTimestamp = now;
     % 转换为datetime对象
@@ -29,8 +28,9 @@ for i = 1:length(files)
     [status,cmdout] = system(command,'-echo');
     %disp(cmdout); %好像不需要单独写显示
     new_filepath = filepath(1:end-length(files(i).name)) + "Processed_"+formattedDateTime+"\";
-    draw(filepath,new_filepath+files(i).name);
     draw(new_filepath + files(i).name(1:end-4) + "_Processed.txt",new_filepath + files(i).name(1:end-4) + "_Processed.txt");
+    draw(filepath,new_filepath+files(i).name);
+  
 end
 
 function draw(filepath,path)
@@ -116,14 +116,23 @@ plot(rv4_high, heights_high, 'm--', 'LineWidth', 1.5, 'DisplayName', 'Beam 4 (hi
 plot(rv5_high, heights_high, 'c--', 'LineWidth', 1.5, 'DisplayName', 'Beam 5 (high)', 'Marker', 'd');
 
 % 添加图例
-legend show;
+%legend show;
 
+persistent a;
+persistent b;
+persistent c;
+persistent d;
     % 调整坐标轴显示范围以适应数据
-    xlim([min([rv1,rv2,rv3,rv4,rv5],[], 'all'), max([rv1,rv2,rv3,rv4,rv5],[], 'all')]);
     if (filepath==path)
+        xlim([min([rv1,rv2,rv3,rv4,rv5],[], 'all'), max([rv1,rv2,rv3,rv4,rv5],[], 'all')]);
         ylim([min(heights, [],'all'), max(heights,[], 'all')]);
+        a=min(heights, [],'all');
+        b=max(heights,[], 'all');
+        c=min([rv1,rv2,rv3,rv4,rv5],[], 'all');
+        d=max([rv1,rv2,rv3,rv4,rv5],[], 'all');
     else
-        ylim([min(heights, [],'all')/3, max(heights,[], 'all')/4]);   
+        ylim([a, b]);  
+        xlim([c, d]);
     end
 
     % 设置图表属性
@@ -131,7 +140,7 @@ legend show;
     ylabel('Height (m)');
     gap=' ';
     title([time gap freq]);
-    legend('show');
+    %legend('show');
     %grid on;
 
     % 保持坐标轴调整状态并显示图表
