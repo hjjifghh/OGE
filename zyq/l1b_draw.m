@@ -3,25 +3,35 @@ clear;
 clc;
 close all;
 
-[file,location] = uigetfile('.txt'); %打开文件选择框
-filepath = fullfile(location, file);%拼接文件名
-disp(filepath)
 
-% 获取当前Unix时间戳
-unixTimestamp = now;
-% 转换为datetime对象
-currentDateTime = datetime('now', 'TimeZone', 'UTC');
-%deltaSeconds = seconds(2);
-% 格式化输出
-formattedDateTime = datestr(currentDateTime, 'yyyy-mm-dd-HH-MM-SS');
+ % 获取当前Unix时间戳
+    unixTimestamp = now;
+    % 转换为datetime对象
+    currentDateTime = datetime('now', 'TimeZone', 'UTC');
+    %deltaSeconds = seconds(2);
+    % 格式化输出
+    formattedDateTime = datestr(currentDateTime, 'yyyy-mm-dd-HH-MM-SS');
+% 指定文件夹路径
+folder_path = 'E:\zyq2024\test2\zyq\20240401'; 
 
-command="python libfix.py "+filepath+" "+file+" "+formattedDateTime;
+% 获取文件夹下所有的 .txt 文件列表
+files = dir(fullfile(folder_path, '*.txt'));
 
-[status,cmdout] = system(command,'-echo');
-%disp(cmdout); %好像不需要单独写显示
-new_filepath = filepath(1:end-length(file)) + "Processed_"+formattedDateTime+"\";
-draw(filepath,new_filepath+file);
-draw(new_filepath + file(1:end-4) + "_Processed.txt",new_filepath + file(1:end-4) + "_Processed.txt");
+% 遍历每个 .txt 文件
+for i = 1:length(files)
+    % 构建完整的文件路径
+    filepath = fullfile(folder_path, files(i).name);
+
+    disp(filepath)
+
+    command="python libfix.py "+filepath+" "+files(i).name+" "+formattedDateTime;
+
+    [status,cmdout] = system(command,'-echo');
+    %disp(cmdout); %好像不需要单独写显示
+    new_filepath = filepath(1:end-length(files(i).name)) + "Processed_"+formattedDateTime+"\";
+    draw(filepath,new_filepath+files(i).name);
+    draw(new_filepath + files(i).name(1:end-4) + "_Processed.txt",new_filepath + files(i).name(1:end-4) + "_Processed.txt");
+end
 
 function draw(filepath,path)
     % 初始化变量存储数据

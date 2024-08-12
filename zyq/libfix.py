@@ -87,7 +87,12 @@ if __name__=="__main__":
 
     
     new_filepath = filepath[:-len(filename)]+"Processed_"+formatted_datetime+"\\"+filename[:-4]+"_Processed.txt"
-    os.mkdir(filepath[:-len(filename)]+"Processed_"+formatted_datetime+"\\")
+    
+    folder_path=filepath[:-len(filename)]+"Processed_"+formatted_datetime+"\\"
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        print("The folder already here")
+    else:
+        os.mkdir(folder_path)
     
     # 读取数据
     original_data,comments= read_data(filepath)
