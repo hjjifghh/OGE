@@ -3,6 +3,7 @@ from sklearn.neighbors import LocalOutlierFactor
 import sys
 import os
 
+
 def read_data(filename):
     """读取原始数据文件，并收集前33行的注释"""
     comments = ''  # 存储注释行
@@ -82,8 +83,11 @@ if __name__=="__main__":
     
     filepath = sys.argv[1]
     filename = sys.argv[2]
-    new_filepath = filepath[:-len(filename)]+"Processed\\"+filename[:-4]+"_Processed.txt"
-    os.mkdir(filepath[:-len(filename)]+"Processed\\")
+    formatted_datetime = sys.argv[3]
+
+    
+    new_filepath = filepath[:-len(filename)]+"Processed_"+formatted_datetime+"\\"+filename[:-4]+"_Processed.txt"
+    os.mkdir(filepath[:-len(filename)]+"Processed_"+formatted_datetime+"\\")
     
     # 读取数据
     original_data,comments= read_data(filepath)
@@ -99,4 +103,4 @@ if __name__=="__main__":
     # 写入新文件
     write_data_with_format(processed_data, new_filepath,comments)
     
-    print(f"Data processing completed. New file saved as '{new_filepath}'")
+    print(f"Data processing completed.\n New file saved as '{new_filepath}'")

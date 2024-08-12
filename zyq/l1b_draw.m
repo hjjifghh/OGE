@@ -6,14 +6,24 @@ close all;
 [file,location] = uigetfile('.txt'); %打开文件选择框
 filepath = fullfile(location, file);%拼接文件名
 disp(filepath)
-command="python libfix.py "+filepath+" "+file;
+
+% 获取当前Unix时间戳
+unixTimestamp = now;
+% 转换为datetime对象
+currentDateTime = datetime('now', 'TimeZone', 'UTC');
+%deltaSeconds = seconds(2);
+% 格式化输出
+formattedDateTime = datestr(currentDateTime, 'yyyy-mm-dd-HH-MM-SS');
+
+command="python libfix.py "+filepath+" "+file+" "+formattedDateTime;
+
 [status,cmdout] = system(command,'-echo');
 %disp(cmdout); %好像不需要单独写显示
-draw(filepath);
-new_filepath = filepath(1:end-length(file)) + "Processed\" + file(1:end-4) + "_Processed.txt";
-draw(new_filepath);
+new_filepath = filepath(1:end-length(file)) + "Processed_"+formattedDateTime+"\";
+draw(filepath,new_filepath+file);
+draw(new_filepath + file(1:end-4) + "_Processed.txt",new_filepath + file(1:end-4) + "_Processed.txt");
 
-function draw(filepath)
+function draw(filepath,path)
     % 初始化变量存储数据
     heights = [];
     rv1 = [];
@@ -78,7 +88,7 @@ rv5_low = rv5(idx_low);
 rv5_high = rv5(idx_high);
 
 % 创建图形窗口
-figure;
+fig=figure("Visible","off");
 
 % 绘制 Beams 的低高度部分
 plot(rv1_low, heights_low, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Beam 1 (low)', 'Marker', 'o');
@@ -100,7 +110,11 @@ legend show;
 
     % 调整坐标轴显示范围以适应数据
     xlim([min([rv1,rv2,rv3,rv4,rv5],[], 'all'), max([rv1,rv2,rv3,rv4,rv5],[], 'all')]);
-    ylim([min(heights, [],'all'), max(heights,[], 'all')]);
+    if (filepath==path)
+        ylim([min(heights, [],'all'), max(heights,[], 'all')]);
+    else
+        ylim([min(heights, [],'all')/3, max(heights,[], 'all')/4]);   
+    end
 
     % 设置图表属性
     xlabel('Radial Velocity (m/s)');
@@ -108,8 +122,20 @@ legend show;
     gap=' ';
     title([time gap freq]);
     legend('show');
-    grid on;
+    %grid on;
 
     % 保持坐标轴调整状态并显示图表
-    hold off;
+    %hold off;
+    path = native2unicode(path, 'utf8');
+    % 构建 PNG 文件路径
+    % 使用 fileparts 函数获取文件名和扩展名
+    [file_path, name, folder_path] = fileparts(path);
+
+    % 构建新的文件路径
+    % 注意：这里我们假设文件名中不含空格
+    new_file_name = file_path+"\"+name+ '.png';
+    new_filepath = fullfile(folder_path, new_file_name);
+
+    % 保存当前图形窗口
+    saveas(fig,new_file_name);
 end

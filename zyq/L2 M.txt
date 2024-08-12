@@ -1,4 +1,4 @@
-#DataName: Atmospheric Wind and Refractive Index Structure Constant
+·#DataName: Atmospheric Wind and Refractive Index Structure Constant
 #CopyRight: Chinese Meridian Project
 #Station: OQZQB(108.66E,22.10N,23m)
 #Instrument: MST Radar
