@@ -25,27 +25,27 @@ def read_data(filename):
     return np.array(data), comments
 
 def correct(data):
-    removed_values = []
-    data, removed_values = correct_LOF(data)
-    data, removed_values = correct_based_on_second_derivative(data, threshold=9)
+    data= correct_LOF(data,threshold=25)
+    data= correct_based_on_second_derivative(data, threshold=2)
     
-    return data, removed_values
+    return data
     
 
-def correct_LOF(data):
+def correct_LOF(data,threshold=28):
     """校正数据并移除异常值"""
     # 假设速度列是第 3、6、9、12 和 15 列（从0开始计数）
     velocity_columns = [2, 5, 8, 11, 14]
     outlier_indices = {}
     
-    # 移除包含 NaN 值的行
-    cleaned_data = data[~np.isnan(data).any(axis=1)]
+    # 移除包含三个及以上 NaN 值的行
+    nan_count = np.sum(np.isnan(data), axis=1)
+    cleaned_data = data[nan_count < 3]
     
     for col in velocity_columns:
         # 选择当前列并应用 LocalOutlierFactor
         X = cleaned_data[:, col].reshape(-1, 1)
         # 使用较小的 n_neighbors，以避免警告
-        lof = LocalOutlierFactor(n_neighbors=min(len(X), 28), contamination='auto')
+        lof = LocalOutlierFactor(n_neighbors=min(len(X), threshold), contamination='auto')
         outlier_labels = lof.fit_predict(X)
         
         # 找出异常值的索引
@@ -62,13 +62,12 @@ def correct_LOF(data):
             if i in outlier_indices[col]:
                 # 如果速度值被标记为异常，则将其设置为 NaN 并记录
                 new_row[col] = np.nan
-                removed_values.append((row[0], row[col]))
         processed_data.append(new_row)
     
     # 将列表转换为 NumPy 数组
     processed_data = np.array(processed_data)
 
-    return processed_data, removed_values
+    return processed_data
 
 def correct_DBS(data):
     """校正数据并移除异常值"""
@@ -284,9 +283,9 @@ def correct_based_on_second_derivative(data, threshold=2.3):
     velocity_columns = [2, 5, 8, 11, 14]
     outlier_indices = {}
 
-    # 移除包含 NaN 值的行
-    #cleaned_data = data[~np.isnan(data).any(axis=1)]
-    cleaned_data = data
+    # 移除包含三个及以上 NaN 值的行
+    nan_count = np.sum(np.isnan(data), axis=1)
+    cleaned_data = data[nan_count < 3]
 
 
     # 创建一个新数组用于存储处理后的数据
@@ -316,13 +315,12 @@ def correct_based_on_second_derivative(data, threshold=2.3):
             if i in outlier_indices[col]:
                 # 如果速度值被标记为异常，则将其设置为 NaN 并记录
                 new_row[col] = np.nan
-                removed_values.append((row[0], row[col]))
         processed_data.append(new_row)
     
     # 将列表转换为 NumPy 数组
     processed_data = np.array(processed_data)
 
-    return processed_data, removed_values
+    return processed_data
 
 
 def write_data_with_format(data, new_filename,comments):
@@ -360,12 +358,8 @@ if __name__=="__main__":
     original_data,comments= read_data(filepath)
     
     # 校正和处理数据
-    processed_data, removed_values = correct(original_data)
+    processed_data=correct(original_data)
     
-    # 输出被删除的速度值及其对应的高度
-    print("Removed Values and Corresponding Heights:")
-    for height, speed in removed_values:
-        print(f"Height: {height}, Speed: {speed}")
     
     # 写入新文件
     write_data_with_format(processed_data, new_filepath,comments)
