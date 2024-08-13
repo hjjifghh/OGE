@@ -24,6 +24,14 @@ def read_data(filename):
 
     return np.array(data), comments
 
+def correct(data):
+    removed_values = []
+    data, removed_values = correct_LOF(data)
+    data, removed_values = correct_based_on_second_derivative(data, threshold=9)
+    
+    return data, removed_values
+    
+
 def correct_LOF(data):
     """校正数据并移除异常值"""
     # 假设速度列是第 3、6、9、12 和 15 列（从0开始计数）
@@ -260,6 +268,62 @@ def correct_based_on_change_rate(data, threshold=2.4):
 
     return processed_data, removed_values
 
+def correct_based_on_second_derivative(data, threshold=2.3):
+    """
+    使用基于变化率的变化率的方法检测连续性并进行异常值检测。
+    
+    参数:
+    - data: 输入的二维 NumPy 数组。
+    - threshold: 标准差倍数阈值，默认为 2.3。
+    
+    返回:
+    - processed_data: 处理后的数据。
+    - removed_values: 被标记为异常值的数据点列表。
+    """
+    # 假设速度列是第 3、6、9、12 和 15 列（从0开始计数）
+    velocity_columns = [2, 5, 8, 11, 14]
+    outlier_indices = {}
+
+    # 移除包含 NaN 值的行
+    #cleaned_data = data[~np.isnan(data).any(axis=1)]
+    cleaned_data = data
+
+
+    # 创建一个新数组用于存储处理后的数据
+    processed_data = []
+    removed_values = []
+
+    for col in velocity_columns:
+        # 选择当前列
+        X = cleaned_data[:, col]
+
+        # 计算变化率
+        first_derivative = np.diff(X)
+
+        # 计算变化率的变化率（二阶导数）
+        second_derivative = np.diff(first_derivative)
+
+        # 计算二阶导数的标准差
+        std_dev = np.std(second_derivative)
+
+        # 找出二阶导数异常的索引
+        outlier_mask = np.abs(second_derivative) > threshold * std_dev
+        outlier_indices[col] = np.flatnonzero(outlier_mask) + 2  # 因为两次 diff 减少了长度
+
+    for i, row in enumerate(cleaned_data):
+        new_row = row.copy()
+        for col in velocity_columns:
+            if i in outlier_indices[col]:
+                # 如果速度值被标记为异常，则将其设置为 NaN 并记录
+                new_row[col] = np.nan
+                removed_values.append((row[0], row[col]))
+        processed_data.append(new_row)
+    
+    # 将列表转换为 NumPy 数组
+    processed_data = np.array(processed_data)
+
+    return processed_data, removed_values
+
 
 def write_data_with_format(data, new_filename,comments):
     """将处理后的数据写入新文件，保持原格式，速度数据保留两位小数"""
@@ -296,7 +360,7 @@ if __name__=="__main__":
     original_data,comments= read_data(filepath)
     
     # 校正和处理数据
-    processed_data, removed_values = correct_based_on_change_rate(original_data)
+    processed_data, removed_values = correct(original_data)
     
     # 输出被删除的速度值及其对应的高度
     print("Removed Values and Corresponding Heights:")
