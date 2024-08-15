@@ -10,7 +10,6 @@ folder_path = 'E:\zyq2024\test2\zyq\20240401\Processed_2024-08-13-06-03-30';
 % 获取文件夹下所有的 .txt 文件列表
 files = dir(fullfile(folder_path, '*.txt'));
 fig1=figure();
-%til = tiledlayout(1,2);
 % 遍历每个 .txt 文件
 
 % 初始化变量存储数据
@@ -28,13 +27,6 @@ for i = 1:length(files)
    fileID = fopen(filepath, 'r');
    headerLines = 3; % 跳过前面的注释行和表头行
 fgets(fileID, headerLines); % 跳过前22行
-
-heights = [];
-rv1 = [];
-rv2 = [];
-rv3 = [];
-rv4 = [];
-rv5 = [];
 
 % 读取数据直到文件结束
 while ~feof(fileID)
@@ -82,7 +74,6 @@ grid on;
 % 保持坐标轴调整状态并显示图表
 hold off;
 drawnow
-
 end
 
 

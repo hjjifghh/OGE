@@ -25,7 +25,7 @@ def read_data(filename):
     return np.array(data), comments
 
 def correct(data):
-    data= correct_LOF(data,threshold=25)
+    data= correct_LOF(data,threshold=21)
     data= correct_based_on_second_derivative(data, threshold=2)
     
     return data
@@ -332,7 +332,7 @@ def write_data_with_format(data, new_filename,comments):
         # 遍历数据行
         for row in data:
             formatted_row = [
-                "\t" +str(round(value, 2) if idx in {2, 5, 8, 11, 14} else str(value))  # 速度数据保留两位小数
+                "    " +str(round(value, 2) if idx in {2, 5, 8, 11, 14} else str(value))  # 速度数据保留两位小数,四个空格
                 for idx, value in enumerate(row)
             ]
             file.write(' '.join(formatted_row) + '\n')
