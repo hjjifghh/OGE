@@ -335,7 +335,7 @@ def write_data_with_format(data, new_filename,comments):
                 "    " +str(round(value, 2) if idx in {2, 5, 8, 11, 14} else str(value))  # 速度数据保留两位小数,四个空格
                 for idx, value in enumerate(row)
             ]
-            file.write(' '.join(formatted_row) + '\n')
+            file.write(''.join(formatted_row) + '\n')
 
 if __name__=="__main__":
     #filename = 'L1B ST.txt'

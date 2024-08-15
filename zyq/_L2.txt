@@ -1,0 +1,77 @@
+#DataName: Power Spectrum Parameters
+#CopyRight: Chinese Meridian Project
+#Station: OQZQB(108.66E,22.10N,23m)
+#Instrument: MST Radar
+#Producer: Wuhan University
+#FileCreateTime: 2024-04-01T00:14:57
+#DataLevel: L1B
+#DataVersion: V01.00
+#DataStartTime: 2024-04-01T00:00:00.000
+#DataEndTime: 2024-04-01T00:14:37.000
+#RecordNumber: 100
+#QualityFlag: 1(1:Okay,2:Caution,3:No-Recommend)
+#DeviceState: TansInputPower=800kW, WellRAntennaNum=1261, WellTAntennaNum=997
+#DeviceSpec: Freq=50.00MHz, PkPower=1994kW, RAntennaNum=1261, TAntennaNum=997, BeamWidth=4.5deg, Rband=1.0MHz
+#ObsParameters: PlsWidth=4.00us, PlsCode=8-bit Complementary, PRF=2500.00Hz, PlsAccum=26, Range=60km, GateNum=100, Rmin=300m, EleAngle=15.0deg, BeamOrder=SZNEW, nFFT=512, SpAverage=8
+#Height(m): The Height Level of the Power Spectrum Parameters, I7.7, missingdata=NaN
+#SNR1(dB): Signal to Noise Ratio in dB of Beam1, F5.1, missingdata=-99999
+#Rv1(m/s): Radial Velocity in m/s of Beam1, F7.2, missingdata=-9999999
+#SW1(m/s): Spectrum Width in m/s of Beam1, F6.2, missingdata=-999999
+#SNR2(dB): Signal to Noise Ratio in dB of Beam2, F5.1, missingdata=-99999
+#Rv2(m/s): Radial Velocity in m/s of Beam2, F7.2, missingdata=-9999999
+#SW2(m/s): Spectrum Width in m/s of Beam2, F6.2, missingdata=-999999
+#SNR3(dB): Signal to Noise Ratio in dB of Beam3, F5.1, missingdata=-99999
+#Rv3(m/s): Radial Velocity in m/s of Beam3, F7.2, missingdata=-9999999
+#SW3(m/s): Spectrum Width in m/s of Beam3, F6.2, missingdata=-999999
+#SNR4(dB): Signal to Noise Ratio in dB of Beam4, F5.1, missingdata=-99999
+#Rv4(m/s): Radial Velocity in m/s of Beam4, F7.2, missingdata=-9999999
+#SW4(m/s): Spectrum Width in m/s of Beam4, F6.2, missingdata=-999999
+#SNR5(dB): Signal to Noise Ratio in dB of Beam5, F5.1, missingdata=-99999
+#Rv5(m/s): Radial Velocity in m/s of Beam5, F7.2, missingdata=-9999999
+#SW5(m/s): Spectrum Width in m/s of Beam5, F6.2, missingdata=-999999
+#-------------------------------------------------------------------
+   Height Horiz_WS Horiz_WD Verti_V     Cn2      Credi
+    900    0.03    315.00    -0.16    -142.39    100
+    1500    8.31    279.64    -0.16    -142.39    100
+    2100    12.86    283.56    -0.16    -142.39    100
+    2700    14.25    298.68    -0.15    -142.39    100
+    3300    13.81    297.14    -0.15    -142.39    100
+    3900    13.22    293.87    -0.16    -142.39    100
+    4500    12.91    290.50    -0.27    -142.39    100
+    5100    13.31    288.80    -0.46    -142.39    100
+    5700    17.47    285.59    -0.69    -142.39    100
+    6300    22.15    286.41    -0.78    -142.39    100
+    6900    26.45    288.13    -0.79    -142.39    100
+    7500    27.79    287.23    -0.78    -142.39    100
+    8100    28.99    288.25    -0.72    -142.39    100
+    8700    29.78    288.96    -0.68    -142.39    100
+    9300    30.25    287.43    -0.56    -142.39    100
+    9900    30.13    285.77    -0.33    -142.39    100
+    10500    29.93    287.43    -0.12    -142.39    100
+    11100    29.66    287.90    0.02    -142.39    100
+    11700    30.53    287.99    0.03    -142.39    100
+    12300    31.41    286.84    0.05    -142.39    100
+    12900    33.37    284.14    0.03    -142.39    100
+    13500    34.55    280.44    -0.06    -142.39    100
+    14100    34.05    273.74    -0.51    -142.39    100
+    14700    30.68    270.90    -0.51    -142.39    100
+    15300    26.33    273.79    -0.63    -142.39    100
+    15900    22.55    276.30    -0.63    -142.39    100
+    16500    20.99    280.23    -0.61    -142.39    100
+    17100    19.24    291.57    -0.53    -142.39    100
+    17700    16.04    303.31    -0.50    -142.39    100
+    18300    13.63    315.23    -0.49    -142.39    100
+    18900    12.47    321.48    -0.55    -142.39    100
+    19500    10.61    320.02    -0.49    -142.39    100
+    20100    8.25    316.14    -0.36    -142.39    100
+    20700    6.78    321.82    -0.19    -142.39    100
+    21300    5.12    337.11    0.04    -142.39    100
+    21900    3.44    333.29    0.11    -142.39    100
+    22500    4.43    313.59    0.11    -142.39    100
+    23100    6.38    314.39    0.09    -142.39    100
+    23700    5.36    309.14    0.16    -142.39    100
+    24300    7.75    295.54    0.18    -142.39    100
+    24900    10.38    293.70    0.19    -142.39    100
+    23100    6.38    314.39    0.09    -142.39    100
+    23700    5.36    309.14    0.16    -142.39    100
+    24300    7.75    295.54    0.18    -142.39    100
