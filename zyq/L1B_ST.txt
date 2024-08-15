@@ -1,4 +1,4 @@
-#DataName: Power Spectrum Parameters
+   #DataName: Power Spectrum Parameters
 #CopyRight: Chinese Meridian Project
 #Station: OQZQB(108.66E,22.10N,23m)
 #Instrument: MST Radar
