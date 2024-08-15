@@ -1,4 +1,4 @@
-%基于一个选定的L1B文件，先调用python程序进行优化，然后绘制高度-速度图像
+%后端流程整合
 clear;
 clc;
 close all;
@@ -28,9 +28,10 @@ for i = 1:length(files)
     [status,cmdout] = system(command,'-echo');
     %disp(cmdout); %好像不需要单独写显示
     new_filepath = filepath(1:end-length(files(i).name)) + "Processed_"+formattedDateTime+"\";
+    completion(new_filepath + files(i).name(1:end-4) + "_Processed.txt");
     draw(new_filepath + files(i).name(1:end-4) + "_Processed.txt",new_filepath + files(i).name(1:end-4) + "_Processed.txt");
     draw(filepath,new_filepath+files(i).name);
-  
+    convert(new_filepath + files(i).name(1:end-4) + "_Processed.txt");
 end
 
 function draw(filepath,path)
@@ -160,13 +161,10 @@ persistent d;
     %saveas(fig,new_file_namefig);
 end
 
-function completion(filepath)
-        % 打开文件并读取数据
-    fileID(1) = fopen('D:\matlabdata\test2\hjt\Processed_20240401\OQZQB_MSTR01_PSPP_L1B_30M_20240401003000_V01.00_ST_Processed.txt', 'r');
-    fileID(2)=fopen('D:\matlabdata\test2\hjt\Processed_20240401\OQZQB_MSTR01_PSPP_L1B_30M_20240401003000_V01.00_M_Processed.txt','r');
-    fileID(3)=fopen('D:\matlabdata\test2\hjt\Processed_20240401\OQZQB_MSTR01_PSPP_L1B_30M_20240401005000_V01.00_ST_Processed.txt','r');
+function completion(filepath) %缺失值的修补
+    fileID = fopen(filepath, 'r');
     headerLines = 3; % 跳过前面的注释行和表头行
-    fgets(fileID(1), headerLines); % 跳过前22行
+    fgets(fileID, headerLines); % 跳过前22行
     % 初始化变量存储数据
     heights = [];
     rv1 = [];
@@ -174,23 +172,43 @@ function completion(filepath)
     rv3 = [];
     rv4 = [];
     rv5 = [];
-    ii=1;
+    r2 = [];
+    r4 = [];
+    r5 = [];
+    r7= [];
+    r8 = [];
+    r10 = [];
+    r11 = [];
+    r13= [];
+    r14= [];
+    r16 = [];
     % 读取数据直到文件结束
-    while ~feof(fileID(ii))
-        line = fgetl(fileID(ii));
+    while ~feof(fileID)
+        line = fgetl(fileID);
         if ~isempty(line) && ~ismember(line(1), {'#', '%'}) % 确保不是注释行或空行
             data = strsplit(line,' '); 
             if numel(data) >= 11 % 确保数据行至少有11个元素（基于提供的列数）
-                heights = [heights, str2double(data{1})];
-                rv1 = [rv1, str2double(data{3})];
-                rv2 = [rv2, str2double(data{6})];
-                rv3 = [rv3, str2double(data{9})];
-                rv4 = [rv4, str2double(data{12})];
-                rv5 = [rv5, str2double(data{15})];
+                heights = [heights, str2double(data{2})];
+                r2=[r2, str2double(data{3})];
+                rv1 = [rv1, str2double(data{4})];
+                 r4=[r4, str2double(data{5})];
+                  r5=[r2, str2double(data{6})];
+                rv2 = [rv2, str2double(data{7})];
+                 r7=[r2, str2double(data{8})];
+                  r8=[r2, str2double(data{9})];
+                rv3 = [rv3, str2double(data{10})];
+                 r10=[r10, str2double(data{11})];
+                  r11=[r11, str2double(data{12})];
+                rv4 = [rv4, str2double(data{13})];
+                 r13=[r2, str2double(data{14})];
+                r14=[r2, str2double(data{15})];
+                rv5 = [rv5, str2double(data{16} )];
+                 r16=[r2, str2double(data{17})];
             end
         end
     end
-    fclose(fileID(ii));
+    fclose(fileID);
+
     len=0;
     pre=0;
     after=0;
@@ -213,9 +231,6 @@ function completion(filepath)
             end   
             pre=i;
         end
-
-
-
     end
     end
     for i=1:length(rv1)
@@ -242,7 +257,6 @@ function completion(filepath)
     else
     rv4(i)=-rv3(i);
     end
-
     end
     end
     end
@@ -265,7 +279,6 @@ function completion(filepath)
             end   
             pre=i;
         end
-
     end
     end
       flag1=0;
@@ -274,10 +287,10 @@ function completion(filepath)
     after=0;
     if(flag3)
           for i=1:length(rv1)
-      if isnan(rv1(i))
+      if isnan(rv3(i))
             aft=i;
         end
-    if ~isnan(rv1(i))
+    if ~isnan(rv3(i))
         if pre>=aft
         pre=i;
         else
@@ -289,32 +302,130 @@ function completion(filepath)
             end   
             pre=i;
         end
-
     end
     end
       flag3=0;
     end
-    % 绘制所有波束的径向速度随高度变化的曲线，同时处理NaN值
 
-    % 绘制所有波束的径向速度随高度变化的曲线，坐标轴交换
-    figure;
+    outputFileID = fopen(filepath, 'r+');
+    for l1=1:33;
+        fgetl(outputFileID);
+    end
+    for i = 2:length(heights)
+        fprintf(outputFileID, '    %.1f    %.1f    %.2f    %.2f    %.1f    %.2f    %.2f    %.1f    %.2f    %.2f    %.1f    %.2f    %.2f    %.1f    %.2f    %.2f\n', heights(i), r2(i),rv1(i), r4(i),r5(i),rv2(i), r7(i), r8(i),rv3(i), r10(i),r11(i),rv4(i), r13(i), r14(15),rv5(i), r16(i));
+    end
+    % 关闭输出文件
+    fclose(outputFileID);
+end
 
-    plot(rv1, heights, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Beam 1', 'Marker', 'o');
-    hold on;
-    plot(rv2, heights, 'r-', 'LineWidth', 1.5, 'DisplayName', 'Beam 2', 'Marker', 's');
-    plot(rv3, heights, 'g-', 'LineWidth', 1.5, 'DisplayName', 'Beam 3', 'Marker', '^');
-    plot(rv4, heights, 'm-', 'LineWidth', 1.5, 'DisplayName', 'Beam 4', 'Marker', 'x');
-    plot(rv5, heights, 'c-', 'LineWidth', 1.5, 'DisplayName', 'Beam 5', 'Marker', 'd');
+function convert(filepath) %转换为L2数据
+    % 打开文件并读取数据
+    fileID = fopen(filepath, 'r');
 
-    % 调整坐标轴显示范围以适应数据
-    xlim([min([rv1,rv2,rv3,rv4,rv5]), max([rv1,rv2,rv3,rv4,rv5])]);
-    %ylim([min([rv1,rv2,rv3,rv4,rv5]), max(rv5)]);
-    % 设置图表属性
-    xlabel('Radial Velocity (m/s)');
-    zlabel('Height (m)');
-    title('Height vs. Radial Velocity for Different Beams');
-    legend('show');
-    grid on;
-    % 保持坐标轴调整状态并显示图表
-    hold off;
+    % 初始化变量
+    angle = 0.0;
+    heights = [];
+    u = [];
+    v = [];
+    w = [];
+    Cn2 = [];
+    Credi = [];
+
+    % 正则表达式用于匹配EleAngle后面紧跟的浮点数
+    regex = 'EleAngle=([\d.]+)';
+
+    % 读取并解析文件直到找到EleAngle值
+    while ~feof(fileID)
+        line = fgets(fileID);
+        if ~isempty(line)
+            matches = regexp(line, regex, 'tokens');
+            if ~isempty(matches)
+                angle = str2double(matches{1}{1});
+                break;
+            end
+        end
+    end
+
+    % 检查是否成功读取EleAngle
+    if isnan(angle)
+        error('无法找到EleAngle值。');
+    end
+
+    % 关闭文件
+    fclose(fileID);
+
+    % 打开文件并读取数据
+    fileID = fopen(filepath, 'r');
+
+    % 读取文件前32行
+    fileContent = cell(32, 1);
+    for i = 1:32
+        fileContent{i} = fgets(fileID);
+    end
+
+    % 创建输出文件
+    f
+    outputFileID = fopen(filepath(1:end-4)+"_L2.txt", 'w');
+
+    % 写入文件前32行到输出文件
+    for i = 1:32
+        fprintf(outputFileID, '%s', fileContent{i});
+    end
+
+    % 读取数据直到文件结束
+    while ~feof(fileID)
+        line = fgetl(fileID);
+        if ~isempty(line) && ~ismember(line(1), {'#', '%'})
+            % 去除注释和空格
+            line = strrep(line, '#', '');
+            line = strrep(line, '%', '');
+            line = strtrim(line);
+
+            % 将行分割为数据字段
+            data = strsplit(line, ' ');
+
+            % 检查数据字段数量是否足够
+            if numel(data) >= 11
+                try
+                    height = str2double(data{1});
+                    rv1 = str2double(data{3});
+                    rv2 = str2double(data{6});
+                    rv3 = str2double(data{9});
+                    rv4 = str2double(data{12});
+                    rv5 = str2double(data{15});
+
+                    % 处理缺失数据
+                    if isnan(height) || isnan(rv1) || isnan(rv2) || isnan(rv3) || isnan(rv4) || isnan(rv5)
+                        continue;
+                    end
+
+                    heights(end+1) = height;
+                    u(end+1) = abs((rv1 - rv2) / 2 / sin(angle * (pi / 180)));
+                    v(end+1) = abs((rv4 - rv3) / 2 / sin(angle * (pi / 180)));
+                    w(end+1) = rv5;
+                    ss = sqrt(u.^2 + v.^2);        % 风速
+                    sd = 2*pi-atan2(u, v);         % 风向
+                    sd_degrees = rad2deg(sd);
+
+                    Cn2(end+1) = -142.39; % 假设Cn2的值是固定的
+                    Credi(end+1) = 100;   % 假设Credi的值是固定的
+
+                catch
+                    % 如果在处理数据时出现错误，则跳过该行
+                    continue;
+                end
+            end
+        end
+    end
+
+    % 关闭文件
+    fclose(fileID);
+
+    % 写入处理后的数据到输出文件
+    fprintf(outputFileID, '   Height Horiz_WS Horiz_WD Verti_V     Cn2      Credi\n');
+    for i = 1:length(heights)
+        fprintf(outputFileID, '    %d    %.2f    %.2f    %.2f    %.2f    %d\n', heights(i), ss(i), sd_degrees(i), w(i), Cn2(i), Credi(i));
+    end
+    % 关闭输出文件
+    fclose(outputFileID);
 end
